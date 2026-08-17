@@ -19,6 +19,15 @@ class Toast {
   }
 }
 
+// ─── API Base URL Configuration ──────────────────────────────────────
+const API_BASE = window.API_BASE || (
+  window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? ''
+    : (window.location.origin.includes('vercel.app') 
+        ? (localStorage.getItem('HAPPIELOOP_API_URL') || 'https://happieloop-todolist.onrender.com')
+        : '')
+);
+
 // ─── Authentication Service ──────────────────────────────────────────
 class AuthService {
   static TOKEN_KEY = 'happieloop_auth_token';
@@ -52,7 +61,7 @@ class AuthService {
   }
 
   static async register(email, username, password) {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch(`${API_BASE}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, username, password }),
@@ -61,7 +70,7 @@ class AuthService {
   }
 
   static async login(identifier, password) {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ identifier, password }),
@@ -70,7 +79,7 @@ class AuthService {
   }
 
   static async getProfile() {
-    const res = await fetch('/api/auth/profile', {
+    const res = await fetch(`${API_BASE}/api/auth/profile`, {
       headers: {
         Authorization: `Bearer ${AuthService.getToken()}`,
       },
@@ -79,7 +88,7 @@ class AuthService {
   }
 
   static async updateProfile(fullName, username) {
-    const res = await fetch('/api/auth/profile', {
+    const res = await fetch(`${API_BASE}/api/auth/profile`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -91,7 +100,7 @@ class AuthService {
   }
 
   static async changePassword(currentPassword, newPassword) {
-    const res = await fetch('/api/auth/change-password', {
+    const res = await fetch(`${API_BASE}/api/auth/change-password`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -105,7 +114,7 @@ class AuthService {
 
 // ─── Task API Service (Authenticated) ────────────────────────────────
 class TaskAPI {
-  static BASE = '/api/tasks';
+  static BASE = `${API_BASE}/api/tasks`;
 
   static getHeaders() {
     const token = AuthService.getToken();

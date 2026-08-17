@@ -12,13 +12,51 @@ const taskRoutes = require('./routes/tasks');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ─── CORS Configuration for Vercel + Localhost + Render ───────────────
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:3000',
+  process.env.CLIENT_URL,
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or same-origin)
+      if (!origin) return callback(null, true);
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.vercel.app') ||
+        origin.endsWith('.onrender.com') ||
+        origin.includes('localhost')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
 // ─── Middleware ──────────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
-app.use(cors());
 app.use(express.json());
 
 // ─── Serve static frontend ─────────────────────────────────────────
 app.use(express.static(path.join(__dirname, 'public')));
+
+// ─── Health Check Endpoint ───────────────────────────────────────────
+app.get('/api/health', (_req, res) => {
+  res.json({
+    success: true,
+    status: 'online',
+    service: 'HappieLoop API',
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // ─── API Routes ─────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
