@@ -74,6 +74,18 @@ cron.schedule('0 0 * * *', async () => {
   }
 });
 
+// ─── Ensure DB Connection for API Routes ──────────────────────────────
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api') && req.path !== '/api/health') {
+    try {
+      await connectDB();
+    } catch (err) {
+      return res.status(500).json({ success: false, error: 'Database connection error' });
+    }
+  }
+  next();
+});
+
 // ─── Fallback to index.html for SPA ─────────────────────────────────
 app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -85,10 +97,17 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ success: false, error: 'Internal server error' });
 });
 
-// ─── Start server after DB connection ───────────────────────────────
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running at http://localhost:${PORT}`);
-    console.log(`⏱️ Daily 12:00 AM midnight cleanup schedule active`);
+// ─── Start server after DB connection (when run directly / on Render) ─
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
+      console.log(`⏱️ Daily 12:00 AM midnight cleanup schedule active`);
+    });
+  }).catch((err) => {
+    console.error('Failed to start server:', err);
   });
-});
+}
+
+module.exports = app;
+
