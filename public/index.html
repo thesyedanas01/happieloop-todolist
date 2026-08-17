@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HappieLoop — Todo & Productivity</title>
+  <meta name="description" content="Stay organized and productive with HappieLoop." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="navbar">
+    <div class="navbar__container">
+      <a href="#tasks" class="navbar__brand">HappieLoop</a>
+      <nav class="navbar__menu">
+        <!-- Guest links -->
+        <div class="navbar__group" id="nav-guest">
+          <a href="#login" class="navbar__link">Home</a>
+          <a href="#login" class="navbar__link navbar__link--signin" id="nav-signin-btn">Sign In</a>
+          <a href="#register" class="navbar__btn-signup" id="nav-signup-btn">Sign Up</a>
+        </div>
+        <!-- Authenticated links -->
+        <div class="navbar__group" id="nav-auth" style="display: none;">
+          <a href="#profile" class="navbar__link navbar__profile" id="nav-profile-link" title="User Profile">
+            <span class="nav-avatar" id="nav-avatar">U</span>
+            <span id="nav-username">Profile</span>
+          </a>
+          <button class="navbar__btn-logout" id="nav-logout-btn">Logout</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Views Container -->
+  <main class="main-content">
+    
+    <!-- ════════════ VIEW 1: LOGIN ════════════ -->
+    <section class="app-view" id="view-login" style="display: none;">
+      <div class="auth-card">
+        <!-- Left Illustration Column -->
+        <div class="auth-card__left">
+          <div class="auth-illustration-wrap">
+            <img src="/images/login.png" alt="HappieLoop Security Illustration" class="auth-illustration-img" />
+          </div>
+        </div>
+
+        <!-- Right Form Column -->
+        <div class="auth-card__right">
+          <h1 class="auth-card__title">Log into HappieLoop</h1>
+          
+          <form class="auth-form" id="login-form" autocomplete="on">
+            <div class="form-group">
+              <label for="login-identifier" class="form-label">Username Or Email</label>
+              <input
+                type="text"
+                id="login-identifier"
+                class="form-input"
+                placeholder="Username or email"
+                required
+                autocomplete="username"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="login-password" class="form-label">Password</label>
+              <input
+                type="password"
+                id="login-password"
+                class="form-input"
+                placeholder="Password"
+                required
+                autocomplete="current-password"
+              />
+            </div>
+
+            <button type="submit" class="btn-primary btn-block" id="login-submit-btn">
+              Log In
+            </button>
+
+            <a href="#register" class="btn-secondary btn-block" id="login-goto-register-btn">
+              Create new account
+            </a>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ VIEW 2: REGISTER ════════════ -->
+    <section class="app-view" id="view-register" style="display: none;">
+      <div class="auth-card">
+        <!-- Left Illustration Column -->
+        <div class="auth-card__left">
+          <div class="auth-illustration-wrap">
+            <img src="/images/login.png" alt="HappieLoop Security Illustration" class="auth-illustration-img" />
+          </div>
+        </div>
+
+        <!-- Right Form Column -->
+        <div class="auth-card__right">
+          <h1 class="auth-card__title">Get started on HappieLoop</h1>
+          
+          <form class="auth-form" id="register-form" autocomplete="on">
+            <div class="form-group">
+              <label for="register-email" class="form-label">Email Address</label>
+              <input
+                type="email"
+                id="register-email"
+                class="form-input"
+                placeholder="Email address"
+                required
+                autocomplete="email"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="register-password" class="form-label">Password</label>
+              <input
+                type="password"
+                id="register-password"
+                class="form-input"
+                placeholder="Password (min. 6 characters)"
+                minlength="6"
+                required
+                autocomplete="new-password"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="register-username" class="form-label">Username</label>
+              <input
+                type="text"
+                id="register-username"
+                class="form-input"
+                placeholder="Username"
+                minlength="3"
+                maxlength="30"
+                required
+                autocomplete="username"
+              />
+            </div>
+
+            <button type="submit" class="btn-primary btn-block" id="register-submit-btn">
+              Submit
+            </button>
+
+            <a href="#login" class="btn-secondary btn-block" id="register-goto-login-btn">
+              I already have an account
+            </a>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ VIEW 3: TASK DASHBOARD ════════════ -->
+    <section class="app-view" id="view-tasks" style="display: none;">
+      <div class="tasks-dashboard">
+        <!-- Dashboard Header -->
+        <div class="tasks-dashboard__header">
+          <div>
+            <h1 class="tasks-dashboard__title">My Tasks</h1>
+            <p class="tasks-dashboard__subtitle" id="user-welcome-sub">
+              Manage your personal tasks
+            </p>
+          </div>
+          <a href="#profile" class="tasks-dashboard__user-badge" title="Go to Profile">
+            <span class="user-avatar" id="user-avatar-initial">U</span>
+            <span class="user-display-name" id="user-display-name">Username</span>
+          </a>
+        </div>
+
+        <!-- Add Task Form -->
+        <form class="add-task-bar" id="add-task-form" autocomplete="off">
+          <div class="add-task-bar__input-wrapper">
+            <svg class="add-task-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <input
+              type="text"
+              id="task-input"
+              class="add-task-bar__input"
+              placeholder="What needs to be done?"
+              maxlength="500"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-primary" id="add-task-btn">
+            Add Task
+          </button>
+        </form>
+
+        <!-- Filters Navigation -->
+        <div class="tasks-filters-bar">
+          <div class="filters-pills" id="filters">
+            <button class="filter-pill filter-pill--active" data-filter="all" id="filter-all">All</button>
+            <button class="filter-pill" data-filter="active" id="filter-active">Active</button>
+            <button class="filter-pill" data-filter="completed" id="filter-completed">Completed</button>
+          </div>
+          <span class="tasks-counter-badge" id="task-counter">0 tasks</span>
+        </div>
+
+        <!-- Task List -->
+        <div class="task-list-wrapper">
+          <ul class="task-list" id="task-list" role="list"></ul>
+
+          <!-- Empty State -->
+          <div class="empty-state" id="empty-state" style="display: none;">
+            <div class="empty-state__icon-wrap">
+              <svg class="empty-state__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+              </svg>
+            </div>
+            <h3 class="empty-state__heading" id="empty-state-heading">No tasks yet</h3>
+            <p class="empty-state__text" id="empty-state-text">Add your first task above to get started!</p>
+          </div>
+        </div>
+
+        <!-- Dashboard Footer -->
+        <div class="tasks-dashboard__footer" id="app-footer">
+          <span class="footer-stats" id="footer-stats-text">Keep going!</span>
+          <button class="btn-clear-completed" id="clear-completed-btn" style="display: none;">
+            Clear completed
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════ VIEW 4: USER PROFILE ════════════ -->
+    <section class="app-view" id="view-profile" style="display: none;">
+      <div class="profile-card">
+        <!-- Profile Header -->
+        <div class="profile-header">
+          <div class="profile-avatar-large" id="profile-avatar-large">U</div>
+          <div>
+            <h1 class="profile-title" id="profile-display-heading">User Profile</h1>
+            <p class="profile-subtitle">Manage your personal details and security</p>
+          </div>
+        </div>
+
+        <!-- Profile Form 1: Account Information -->
+        <div class="profile-section">
+          <h2 class="profile-section-title">Account Information</h2>
+          <form class="profile-form" id="profile-info-form">
+            <div class="form-group">
+              <label for="profile-fullname" class="form-label">Full Name</label>
+              <input
+                type="text"
+                id="profile-fullname"
+                class="form-input"
+                placeholder="e.g. Alex Johnson"
+                maxlength="60"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="profile-username" class="form-label">Username</label>
+              <input
+                type="text"
+                id="profile-username"
+                class="form-input"
+                placeholder="Username"
+                minlength="3"
+                maxlength="30"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="profile-email" class="form-label">Email Address</label>
+              <input
+                type="email"
+                id="profile-email"
+                class="form-input form-input--disabled"
+                placeholder="Email address"
+                readonly
+                disabled
+                title="Email address is permanent and cannot be modified."
+              />
+            </div>
+
+            <button type="submit" class="btn-primary btn-save" id="profile-save-btn">
+              Save Changes
+            </button>
+          </form>
+        </div>
+
+        <!-- Divider -->
+        <hr class="profile-divider" />
+
+        <!-- Profile Form 2: Change Password -->
+        <div class="profile-section">
+          <h2 class="profile-section-title">Change Password</h2>
+          <form class="profile-form" id="profile-password-form">
+            <div class="form-group">
+              <label for="password-current" class="form-label">Current Password</label>
+              <input
+                type="password"
+                id="password-current"
+                class="form-input"
+                placeholder="Enter current password"
+                required
+                autocomplete="current-password"
+              />
+            </div>
+
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="password-new" class="form-label">New Password</label>
+                <input
+                  type="password"
+                  id="password-new"
+                  class="form-input"
+                  placeholder="Min. 6 characters"
+                  minlength="6"
+                  required
+                  autocomplete="new-password"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="password-confirm" class="form-label">Confirm New Password</label>
+                <input
+                  type="password"
+                  id="password-confirm"
+                  class="form-input"
+                  placeholder="Re-enter new password"
+                  minlength="6"
+                  required
+                  autocomplete="new-password"
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary btn-save" id="password-change-btn">
+              Update Password
+            </button>
+          </form>
+        </div>
+
+        <div class="profile-footer-nav">
+          <a href="#tasks" class="btn-secondary">← Back to My Tasks</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Page Footer -->
+  <footer class="page-footer">
+    <div class="page-footer__container">
+      <p class="page-footer__text">© 2026 HappieLoop. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
